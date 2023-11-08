@@ -46,7 +46,7 @@ namespace Mango.Services.AuthAPI.Controllers
             _response.Result = loginResponse;
             return Ok(_response);
         }
-        [HttpPost("AssignRole")]
+        [HttpPost("assignRole")]
         public async Task<IActionResult> AssignRole([FromBody] RegistrationRequestDto model)
         {
            
@@ -54,7 +54,7 @@ namespace Mango.Services.AuthAPI.Controllers
             if (!assignRoleSuccessful)
             {
                 _response.IsSuccess = false;
-                _response.Message = "Error encounted";
+                _response.Message = "Error uncounted";
                 return BadRequest(_response);
             }
             

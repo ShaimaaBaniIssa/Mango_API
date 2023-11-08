@@ -1,4 +1,5 @@
-﻿using Mango.Web.Service.IService;
+﻿using Mango.Web.Models.CouponDto;
+using Mango.Web.Service.IService;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Collections.Generic;

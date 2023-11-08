@@ -1,4 +1,6 @@
-﻿namespace Mango.Web.Service.IService
+﻿using Mango.Web.Models.CouponDto;
+
+namespace Mango.Web.Service.IService
 {
     public interface ICouponService
     {
