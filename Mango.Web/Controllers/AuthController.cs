@@ -54,6 +54,7 @@ namespace Mango.Web.Controllers
                 assignRole = await _authService.AssignRoleAsync(registrationRequest);
                 if (assignRole != null && assignRole.IsSuccess)
                 {
+                   
                     TempData["success"] = "Registration Successful";
                     return RedirectToAction(nameof(Login));
                 }

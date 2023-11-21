@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Mango.Service.ShoppingCartAPI.Models.Dto
+namespace Mango.Web.Models.CartDto
 {
     public class CartDetailsDto
     {

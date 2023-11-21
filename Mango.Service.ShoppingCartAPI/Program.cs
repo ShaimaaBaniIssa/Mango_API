@@ -1,6 +1,8 @@
 using AutoMapper;
+using Mango.MessageBus;
 using Mango.Service.ShoppingCartAPI.Service;
 using Mango.Service.ShoppingCartAPI.Service.IService;
+using Mango.Service.ShoppingCartAPI.Utility;
 using Mango.Services.ShoppingCart;
 using Mango.Services.ShoppingCart.Data;
 using Mango.Services.ShoppingCart.Extensions;
@@ -53,19 +55,30 @@ builder.Services.AddSingleton(mapper);
 // to use AutoMapper using dependency injection
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
+
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<ICouponService, CouponService>();
+
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<BackendApiAuthenticationHttpClientHandler>();
+
+builder.Services.AddScoped<IMessageBus, MessageBus>();
+
 // add http client for product
 builder.Services.AddHttpClient("Product", u => u.BaseAddress =
-new Uri(builder.Configuration["ServiceUrls:ProductAPI"]));
+new Uri(builder.Configuration["ServiceUrls:ProductAPI"]))
+    .AddHttpMessageHandler<BackendApiAuthenticationHttpClientHandler>(); // to add token
 builder.Services.AddHttpClient("Coupon", u => u.BaseAddress =
-new Uri(builder.Configuration["ServiceUrls:CouponAPI"]));
+new Uri(builder.Configuration["ServiceUrls:CouponAPI"])).AddHttpMessageHandler<BackendApiAuthenticationHttpClientHandler>(); ;
 
-builder.Services.AddScoped<IProductService,ProductService>();
-builder.Services.AddScoped<ICouponService, CouponService>();
+
+
 
 
 // for authentication
-//builder.AddAppAuthentication();
-//builder.Services.AddAuthorization();
+builder.AddAppAuthentication();
+builder.Services.AddAuthorization();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

@@ -41,6 +41,7 @@ namespace Mango.Web.Service
                 Url = SD.AuthAPIBase + "/api/auth/register"
             }, withBearer: false);
         }
+        
 
     }
 }
