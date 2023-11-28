@@ -1,4 +1,4 @@
-﻿using Mango.Service.ShoppingCartAPI.Models;
+﻿using Mango.Services.ShoppingCartAPI.Models;
 
 using Microsoft.EntityFrameworkCore;
 

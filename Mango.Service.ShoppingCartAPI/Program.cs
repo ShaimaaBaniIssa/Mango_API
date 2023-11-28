@@ -1,8 +1,8 @@
 using AutoMapper;
 using Mango.MessageBus;
-using Mango.Service.ShoppingCartAPI.Service;
-using Mango.Service.ShoppingCartAPI.Service.IService;
-using Mango.Service.ShoppingCartAPI.Utility;
+using Mango.Services.ShoppingCartAPI.Service;
+using Mango.Services.ShoppingCartAPI.Service.IService;
+using Mango.Services.ShoppingCartAPI.Utility;
 using Mango.Services.ShoppingCart;
 using Mango.Services.ShoppingCart.Data;
 using Mango.Services.ShoppingCart.Extensions;

@@ -1,13 +1,14 @@
 ﻿using AutoMapper;
-using Mango.Service.ProductAPI.Models;
-using Mango.Service.ProductAPI.Models.Dto;
-using Mango.Services.ProductAPI.Data;
+
 using Mango.Services.ProductAPI.Models.Dto;
+using Mango.Services.ProductAPI.Data;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Mango.Services.ProductAPI.Models;
 
-namespace Mango.Service.ProductAPI.Controllers
+namespace Mango.Services.ProductAPI.Controllers
 {
     [Route("api/product")]
     [ApiController]

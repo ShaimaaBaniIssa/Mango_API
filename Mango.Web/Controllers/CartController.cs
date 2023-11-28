@@ -1,4 +1,5 @@
 ﻿using Mango.Web.Models.CartDto;
+using Mango.Web.Models.OrderDto;
 using Mango.Web.Service.IService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,9 +12,12 @@ namespace Mango.Web.Controllers
     public class CartController : Controller
     {
         private readonly ICartService _cartService;
-        public CartController(ICartService cartService)
+        private readonly IOrderService _orderService;
+        public CartController(ICartService cartService , IOrderService orderService)
         {
             _cartService = cartService;
+            _orderService = orderService;   
+
         }
         [Authorize]
         public async Task<IActionResult> CartIndex()
@@ -22,6 +26,34 @@ namespace Mango.Web.Controllers
             
             return View(await LoadCartDtoBasedOnLoggedInUSer());
             
+        }
+        public async Task<IActionResult> Checkout()
+        {
+
+
+            return View(await LoadCartDtoBasedOnLoggedInUSer());
+
+        }
+        [HttpPost]
+        [ActionName("Checkout")]
+        public async Task<IActionResult> Checkout(CartDto cartDto)
+        {
+            CartDto cart = await LoadCartDtoBasedOnLoggedInUSer();
+            cart.CartHeader.Phone = cartDto.CartHeader.Phone;
+            cart.CartHeader.FirstName = cartDto.CartHeader.FirstName;
+            cart.CartHeader.LastName = cartDto.CartHeader.LastName;
+            cart.CartHeader.Email = cartDto.CartHeader.Email;
+
+            ResponseDto? response =await _orderService.CreateOrder(cart);
+            OrderHeaderDto orderHeaderDto = JsonConvert.DeserializeObject<OrderHeaderDto>(Convert.ToString(response.Result));
+            if(response!=null && response.IsSuccess)
+            {
+                //payment
+
+            }
+            
+            return View();
+
         }
         private async Task<CartDto> LoadCartDtoBasedOnLoggedInUSer()
         {

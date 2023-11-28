@@ -1,9 +1,9 @@
-﻿using Mango.Service.ShoppingCartAPI.Models.Dto;
-using Mango.Service.ShoppingCartAPI.Service.IService;
+﻿using Mango.Services.ShoppingCartAPI.Models.Dto;
+using Mango.Services.ShoppingCartAPI.Service.IService;
 using Microsoft.EntityFrameworkCore.Storage.Json;
 using Newtonsoft.Json;
 
-namespace Mango.Service.ShoppingCartAPI.Service
+namespace Mango.Services.ShoppingCartAPI.Service
 {
     public class CouponService : ICouponService
     {

@@ -1,6 +1,6 @@
 ﻿
 
-namespace Mango.Service.ProductAPI.Models.Dto
+namespace Mango.Services.ProductAPI.Models.Dto
 {
     public class ProductDto
     {

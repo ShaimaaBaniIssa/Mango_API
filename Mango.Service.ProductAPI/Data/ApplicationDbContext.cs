@@ -1,4 +1,4 @@
-﻿using Mango.Service.ProductAPI.Models;
+﻿using Mango.Services.ProductAPI.Models;
 
 using Microsoft.EntityFrameworkCore;
 
