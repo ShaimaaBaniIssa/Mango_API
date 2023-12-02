@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Mango.MessageBus;
+using Stripe;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -58,7 +59,7 @@ builder.Services.AddSingleton(mapper);
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 
-builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IProductService, Mango.Services.OrderAPI.Service.ProductService>();
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<BackendApiAuthenticationHttpClientHandler>();
@@ -83,6 +84,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+StripeConfiguration.ApiKey = builder.Configuration.GetValue<string>("Stripe:SecretKey");
 
 app.UseHttpsRedirection();
 
