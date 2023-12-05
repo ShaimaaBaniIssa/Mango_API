@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Stripe.Checkout;
 using Stripe;
+using Mango.MessageBus;
 
 namespace Mango.Services.OrderAPI.Controllers
 {
@@ -20,12 +21,16 @@ namespace Mango.Services.OrderAPI.Controllers
         private IMapper _mapper;
         private readonly ApplicationDbContext _db;
         private IProductService _productService;
-        public OrderAPIController(IProductService productService, IMapper mapper, ApplicationDbContext db)
+        private readonly IMessageBus _messageBus;
+        private readonly IConfiguration _configuration;
+        public OrderAPIController(IProductService productService, IMapper mapper, ApplicationDbContext db,IMessageBus messageBus,IConfiguration configuration)
         {
             _db = db;
             _mapper = mapper;
             _productService = productService;
             _response = new ResponseDto();
+            _messageBus = messageBus;
+            _configuration = configuration;
         }
         [Authorize]
         [HttpPost("CreateOrder")]
@@ -142,6 +147,14 @@ namespace Mango.Services.OrderAPI.Controllers
                     orderHeader.Status = SD.Status_Approved;
                     _db.SaveChanges();
 
+                    // send an email + add rewards
+                    RewardsDto rewardsDto = new RewardsDto()
+                    {
+                        OrderId = orderHeader.OrderHeaderId,
+                        UserId = orderHeader.UserId,
+                        RewardsActivity = Convert.ToInt32(orderHeader.OrderTotal)
+                    };
+                    await _messageBus.PublishMessage(rewardsDto, _configuration.GetValue<string>("TopicsAndQueueNames:OrderCreatedTopic"));
                     _response.Result = _mapper.Map<OrderHeaderDto>(orderHeader) ;
 
                 }

@@ -1,4 +1,5 @@
 ﻿using Mango.Services.EmailAPI.Data;
+using Mango.Services.EmailAPI.Message;
 using Mango.Services.EmailAPI.Models;
 using Mango.Services.EmailAPI.Models.Dto.CartDto;
 using Microsoft.Azure.Amqp.Framing;
@@ -44,6 +45,13 @@ namespace Mango.Services.EmailAPI.Services
             await LogAndEmail("User Registration Successful. <br/> Email:  "+ email, "domain@gmail.com");
 
         }
+
+        public async Task LogOrderPlaced(RewardMessage rewardMessage)
+        {
+            string message = "New Order Placed. </br> Order ID: " + rewardMessage.OrderId;
+            await LogAndEmail(message, "domain@gmail.com");
+        }
+
         private async Task<bool> LogAndEmail(string message , string email)
         {
             try
