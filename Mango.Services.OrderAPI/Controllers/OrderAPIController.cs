@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Stripe.Checkout;
 using Stripe;
 using Mango.MessageBus;
+using Microsoft.EntityFrameworkCore;
 
 namespace Mango.Services.OrderAPI.Controllers
 {
@@ -23,7 +24,7 @@ namespace Mango.Services.OrderAPI.Controllers
         private IProductService _productService;
         private readonly IMessageBus _messageBus;
         private readonly IConfiguration _configuration;
-        public OrderAPIController(IProductService productService, IMapper mapper, ApplicationDbContext db,IMessageBus messageBus,IConfiguration configuration)
+        public OrderAPIController(IProductService productService, IMapper mapper, ApplicationDbContext db, IMessageBus messageBus, IConfiguration configuration)
         {
             _db = db;
             _mapper = mapper;
@@ -32,6 +33,86 @@ namespace Mango.Services.OrderAPI.Controllers
             _messageBus = messageBus;
             _configuration = configuration;
         }
+        [Authorize]
+        [HttpGet("GetOrder/{id:int}")]
+        public ResponseDto? Get(int id)
+        {
+            try
+            {
+                OrderHeader orderHeader = _db.OrderHeader.Include(u => u.OrderDetails).First(u => u.OrderHeaderId == id);
+                _response.Result=_mapper.Map<OrderHeaderDto>(orderHeader);
+
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess=false;
+                _response.Message=ex.Message;
+            }
+            return _response;
+        }
+        [Authorize]
+        [HttpGet("GetOrders")]
+        public ResponseDto? Get(string? userId = "")
+        {
+            try
+            {
+                IEnumerable<OrderHeader> objList;
+                if (User.IsInRole(SD.Role_Admin))
+                {
+                    objList = _db.OrderHeader.Include(u => u.OrderDetails).OrderByDescending(u => u.OrderHeaderId).ToList();
+                }
+                else
+                {
+                    objList = _db.OrderHeader.Include(u => u.OrderDetails).Where(u => u.UserId == userId).OrderByDescending(u => u.OrderHeaderId).ToList();
+                }
+
+                _response.Result = _mapper.Map<IEnumerable<OrderHeaderDto>>(objList);
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.Message = ex.Message;
+            }
+            return _response;
+        }
+        
+        [Authorize]
+        [HttpPost("UpdateOrderStatus/{orderId:int}")]
+        public async Task<ResponseDto> UpdateOrderStatus(int orderId,[FromBody] string newStatus) 
+        {
+            try
+            {
+                OrderHeader? orderHeader = _db.OrderHeader.FirstOrDefault(u => u.OrderHeaderId == orderId);
+                if(orderHeader != null)
+                {
+                    if(newStatus == SD.Status_Canceled)
+                    {
+                        // refund
+                        var options = new RefundCreateOptions
+                        {
+                            Reason = RefundReasons.RequestedByCustomer,
+                            PaymentIntent = orderHeader.PaymentIntentId
+                        };
+                        var service = new RefundService();
+                        Refund refund = service.Create(options);
+
+                    }
+                    orderHeader.Status = newStatus;
+                    await _db.SaveChangesAsync();
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+                _response.Message = ex.Message;
+                _response.IsSuccess=false;
+            }
+       
+            return _response;
+        }
+
         [Authorize]
         [HttpPost("CreateOrder")]
         public async Task<ResponseDto> CreateOrder([FromBody] CartDto cartDto)
