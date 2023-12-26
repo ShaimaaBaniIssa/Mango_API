@@ -56,17 +56,17 @@ namespace Mango.Services.OrderAPI.Controllers
         {
             try
             {
-                IEnumerable<OrderHeader> objList;
+                IEnumerable<OrderHeader> orderHeaders;
                 if (User.IsInRole(SD.Role_Admin))
                 {
-                    objList = _db.OrderHeader.Include(u => u.OrderDetails).OrderByDescending(u => u.OrderHeaderId).ToList();
+                    orderHeaders = _db.OrderHeader.Include(u => u.OrderDetails).OrderByDescending(u => u.OrderHeaderId).ToList();
                 }
                 else
                 {
-                    objList = _db.OrderHeader.Include(u => u.OrderDetails).Where(u => u.UserId == userId).OrderByDescending(u => u.OrderHeaderId).ToList();
+                    orderHeaders = _db.OrderHeader.Include(u => u.OrderDetails).Where(u => u.UserId == userId).OrderByDescending(u => u.OrderHeaderId).ToList();
                 }
 
-                _response.Result = _mapper.Map<IEnumerable<OrderHeaderDto>>(objList);
+                _response.Result = _mapper.Map<IEnumerable<OrderHeaderDto>>(orderHeaders);
             }
             catch (Exception ex)
             {
