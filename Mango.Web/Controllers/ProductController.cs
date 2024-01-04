@@ -85,39 +85,40 @@ namespace Mango.Web.Controllers
             return View(productDto);
 
         }
-		public async Task<IActionResult> EditProduct(int id)
-		{
+        public async Task<IActionResult> EditProduct(int id)
+        {
 
-			ResponseDto? response = await _productService.GetProductByIdAsync(id);
-			if (response != null && response.IsSuccess)
-			{
-				ProductDto? product = JsonConvert.DeserializeObject<ProductDto>(Convert.ToString(response.Result));
-				return View(product);
+            ResponseDto? response = await _productService.GetProductByIdAsync(id);
+            if (response != null && response.IsSuccess)
+            {
+                ProductDto? product = JsonConvert.DeserializeObject<ProductDto>(Convert.ToString(response.Result));
+                return View(product);
 
-			}
-			else
-			{
-				TempData["error"] = response?.Message;
-			}
-			return NotFound();
-		}
-		[HttpPost]
-		public async Task<IActionResult> EditProduct(ProductDto productDto)
-		{
+            }
+            else
+            {
+                TempData["error"] = response?.Message;
+            }
+            return NotFound();
+        }
+        [HttpPost]
+        public async Task<IActionResult> EditProduct(ProductDto productDto)
+        {
+            if (ModelState.IsValid)
+            {
+                ResponseDto? response = await _productService.UpdateProductAsync(productDto);
+                if (response != null && response.IsSuccess)
+                {
+                    TempData["success"] = "Product updated Successfully";
+                    return RedirectToAction(nameof(ProductIndex));
+                }
+                else
+                {
+                    TempData["error"] = response?.Message;
+                }
+            }
+            return View(productDto);
 
-			ResponseDto? response = await _productService.UpdateProductAsync(productDto);
-			if (response != null && response.IsSuccess)
-			{
-				TempData["success"] = "Product updated Successfully";
-				return RedirectToAction(nameof(ProductIndex));
-			}
-			else
-			{
-				TempData["error"] = response?.Message;
-			}
-
-			return View(productDto);
-
-		}
-	}
+        }
+    }
 }

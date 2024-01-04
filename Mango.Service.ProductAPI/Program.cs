@@ -64,9 +64,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
+app.UseStaticFiles(); //the application will go into wwwroot
 app.MapControllers();
 ApplyMigration();
 
