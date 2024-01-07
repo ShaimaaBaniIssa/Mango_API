@@ -19,6 +19,6 @@ namespace Mango.Web.Models
         public string? ImageLocalPath { get; set; }
         [MaxFileSize(1)] // custom validation
         [AllowedExtensions(new string[] {".jpg",".png"})]
-        public IFormFile Image {  get; set; }
+        public IFormFile? Image {  get; set; }
     }
 }
