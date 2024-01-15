@@ -61,10 +61,21 @@ builder.Services.AddAuthorization();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+
 if (app.Environment.IsDevelopment())
 {
+app.UseSwagger();
+app.UseSwaggerUI();
+}
+
+if (app.Environment.IsProduction())
+{
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "COUPON API");
+        c.RoutePrefix = string.Empty;
+    });
 }
 Stripe.StripeConfiguration.ApiKey = builder.Configuration.GetValue<string>("Stripe:SecretKey");
 
