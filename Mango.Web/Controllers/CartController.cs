@@ -81,6 +81,12 @@ namespace Mango.Web.Controllers
                 StripeRequestDto stripeResponseResult = JsonConvert.DeserializeObject<StripeRequestDto>
                                             (Convert.ToString(stripeResponse.Result));
                 Response.Headers.Add("Location", stripeResponseResult.StripeSessionUrl);
+
+                foreach(var item in cart.CartDetails)
+                {
+                    _cartService.RemoveFromCartAsync(item.CartDetailsId);
+
+                }
                 return new StatusCodeResult(303);
 
 
@@ -116,22 +122,21 @@ namespace Mango.Web.Controllers
             return View();
            
         }
+
+        [HttpPost]
         public async Task<IActionResult> EmailCart(CartDto cartDto)
         {
             CartDto cart = await LoadCartDtoBasedOnLoggedInUser();
             cart.CartHeader.Email = User.Claims.Where(u => u.Type == JwtRegisteredClaimNames.Email)?.FirstOrDefault()?.Value;
             ResponseDto? response = await _cartService.EmailCart(cart);
-
-
-            if (response != null && response.IsSuccess)
+            if (response != null & response.IsSuccess)
             {
                 TempData["success"] = "Email will be processed and sent shortly.";
-                return RedirectToAction("CartIndex");
+                return RedirectToAction(nameof(CartIndex));
             }
-
             return View();
-
         }
+
         public async Task<IActionResult> RemoveCoupon(CartDto cartDto)
         {
             var userId = User.Claims.Where(u => u.Type == JwtRegisteredClaimNames.Sub)?.FirstOrDefault()?.Value;

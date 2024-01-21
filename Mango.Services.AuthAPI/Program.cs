@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Mango.Services.AuthAPI.Service.IService;
 using Mango.Services.AuthAPI.Service;
 using Mango.MessageBus;
+using Mango.Services.AuthAPI.RabbitMQSender;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,7 +30,9 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
-builder.Services.AddScoped<IMessageBus, MessageBus>();
+//builder.Services.AddScoped<IMessageBus, MessageBus>();
+builder.Services.AddScoped<IRabbitMQAuthMessageSender, RabbitMQAuthMessageSender>();
+
 
 var app = builder.Build();
 

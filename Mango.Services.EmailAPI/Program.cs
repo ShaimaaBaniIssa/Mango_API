@@ -23,6 +23,9 @@ var optionBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
 optionBuilder.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 builder.Services.AddSingleton(new EmailService(optionBuilder.Options));
 
+builder.Services.AddHostedService<RabbitMQAuthConsumer>(); // automatically start the service
+builder.Services.AddHostedService<RabbitMQCartConsumer>(); // automatically start the service
+builder.Services.AddHostedService<RabbitMQOrderConsumer>();
 
 builder.Services.AddSingleton<IAzureServiceBusConsumer, AzureServiceBusConsumer>();
 var app = builder.Build();

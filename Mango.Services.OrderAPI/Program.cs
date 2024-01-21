@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Mango.MessageBus;
 using Stripe;
+using Mango.Services.OrderAPI.RabbitMQSender;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -64,7 +65,7 @@ builder.Services.AddScoped<IProductService, Mango.Services.OrderAPI.Service.Prod
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<BackendApiAuthenticationHttpClientHandler>();
 
-builder.Services.AddScoped<IMessageBus, MessageBus>();
+builder.Services.AddScoped<IRabbitMQOrderMessageSender, RabbitMQOrderMessageSender>();
 
 // add http client for product
 builder.Services.AddHttpClient("Product", u => u.BaseAddress =
