@@ -81,6 +81,10 @@ namespace Mango.Web.Controllers
                 StripeRequestDto stripeResponseResult = JsonConvert.DeserializeObject<StripeRequestDto>
                                             (Convert.ToString(stripeResponse.Result));
                 Response.Headers.Add("Location", stripeResponseResult.StripeSessionUrl);
+                foreach(var item in cart.CartDetails)
+                {
+                    _cartService.RemoveFromCartAsync(item.CartDetailsId);
+                }
                 return new StatusCodeResult(303);
 
 
